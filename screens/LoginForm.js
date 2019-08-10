@@ -32,7 +32,7 @@ export default class LoginForm extends Component {
   componentDidMount() {
     // do stuff while splash screen is shown
     // After having done stuff (such as async tasks) hide the splash screen
-    axios.defaults.baseURL = 'http://192.168.225.27:8000/rest/auth/';
+    //axios.defaults.baseURL = 'http://192.168.225.27:8000/rest/auth/';
     axios.defaults.timeout = 5000;
     setTimeout(() => SplashScreen.hide(), 1000);
   }
@@ -59,18 +59,24 @@ export default class LoginForm extends Component {
     if(this.state.loginAuth)
     {
       //alert("Authenticated");
-      console.log("authenticated");
-      this.props.navigation.navigate('Home');
+      console.log("Authenticated\n" + this.state.email + "\n" + "\n" + this.state.token.key);
+      this.props.navigation.navigate('App');
     }
     else{
       //alert("Not Authenticated\n" + this.state.email + "\n" + this.state.password);
       //alert()
-      console.log("Not Authenticated\n" + this.state.email + "\n" + this.state.password);
+      console.log("Not Authenticated\n" + this.state.email + "\n" +
+       this.state.password + "\n");
+      //this.props.navigation.navigate('App');
     }
   }
 
   async handleRequest() {
     //const endpoint = this.props.create ? 'register' : 'login';
+    const instance = axios.create({
+      baseURL: 'http://192.168.43.228:8000/rest/auth/',
+      timeout: 1500,
+    });
     const payload = { email: this.state.email, password: this.state.password }
 
     //if (this.props.create) {
@@ -79,31 +85,32 @@ export default class LoginForm extends Component {
     //}
     //alert("xs");
     console.log("lolol");
-    await axios
+    await instance
       .post('login/', payload)
       .then(response => {
         this.state.token = response.data;
-        AsyncStorage.setItem('user', JSON.stringify(response.data));
-        //const user = AsyncStorage.getItem('user');
-        //console.log(user.key);
+        AsyncStorage.setItem('user_id', JSON.stringify(response.data));
+        const user = AsyncStorage.getItem('user_id');
+        console.log(user.key);
         // We set the returned token as the default authorization header
-        axios.defaults.headers.common.Authorization = this.state.token;
+        axios.defaults.headers.common.Authorization = {'Authorization': `Bearer ${this.state.token}`};
         console.log(response);
         console.log("XD");
         this.setState({loginAuth: true});
-        console.log(axios.defaults.headers.common.Authorization.key);
-        this.props.navigation.navigate('Home');
+        console.log(axios.defaults.headers.common.Authorization);
+        //this.props.navigation.navigate('Home');
       })
       .catch(error => console.log(error));
 
-      //this.checkLoginAuth();
+      this.checkLoginAuth();
   }
   async handleLogoutRequest() {
-    await axios
-      .post('logout/', this.state.token)
-      .then(response => {
-        console.log("asdfghj");
-      })
+    const instance = axios.create({
+      baseURL: 'http://192.168.43.228:8000/rest/auth/',
+      timeout: 1500,
+    });
+    await instance
+      .post('logout/')
       .catch(error =>  console.log(error))
   }
 
@@ -128,9 +135,6 @@ export default class LoginForm extends Component {
             onChangeText={(text) => this.setState({ password: text })} value={this.state.password}/>
           <Button style={styles.loginButton} textStyle={styles.buttonText} onPress={this.handleRequest.bind(this)}>
             Log in
-          </Button>
-          <Button style={styles.loginButton} textStyle={styles.buttonText} onPress={this.handleLogoutRequest.bind(this)}>
-            Log out
           </Button>
           <Text>
             Forgotten Password? Reset now

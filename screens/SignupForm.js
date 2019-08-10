@@ -11,7 +11,7 @@ import {
 
 import SplashScreen from 'react-native-splash-screen';
 import Button from 'apsl-react-native-button'
-
+import axios from 'axios';
 
 export default class SignupForm extends Component {
   constructor(props) {
@@ -19,12 +19,16 @@ export default class SignupForm extends Component {
     this.state = {
       email :"",
       password:"",
-      validated: false ,
-       }
+      password2: "",
+      validated: false,
+      RegisterAuth: false,
+    }
   }
   componentDidMount() {
     // do stuff while splash screen is shown
     // After having done stuff (such as async tasks) hide the splash screen
+    //axios.defaults.baseURL = 'http://192.168.43.228:8000/';
+    axios.defaults.timeout = 5000;
     setTimeout(() => SplashScreen.hide(), 1000);
   }
 
@@ -44,6 +48,58 @@ export default class SignupForm extends Component {
       console.log("Email is Correct");
     }
   }
+
+  checkRegisterAuth() {
+    if(this.state.loginAuth)
+    {
+      //alert("Authenticated");
+      console.log("Authenticated\n" + this.state.email + "\n" +
+       this.state.password + "\n" + this.state.token.key);
+      this.props.navigation.navigate('Home');
+    }
+    else{
+      //alert("Not Authenticated\n" + this.state.email + "\n" + this.state.password);
+      //alert()
+      alert("Not Authenticated\n" + this.state.email + "\n" +
+       this.state.password + "\n");
+    }
+  }
+
+  async handleRegisterRequest() {
+    //const endpoint = this.props.create ? 'register' : 'login';
+    const instance = axios.create({
+      baseURL: 'http://192.168.43.228:8000/',
+      timeout: 5000,
+    });
+    const payload = { email: this.state.email, password1: this.state.password, password2: this.state.password2 }
+
+    //if (this.props.create) {
+    //  payload.first_name = this.state.firstName;
+    //  payload.last_name = this.state.lastName;
+    //}
+    //alert("xs");
+    console.log("lolol");
+    await instance
+      .post('api/users/', payload)
+      .then(response => {
+        this.state.token = response.data;
+        AsyncStorage.setItem('user_id', JSON.stringify(response.data));
+        const user = AsyncStorage.getItem('user_id');
+        console.log(user.key);
+        // We set the returned token as the default authorization header
+        axios.defaults.headers.common.Authorization = this.state.token;
+        console.log(response);
+        console.log("XD");
+        this.setState({RegisterAuth: true});
+        console.log(axios.defaults.headers.common.Authorization.key);
+        this.props.navigation.navigate('Home');
+      })
+      .catch(error => console.log(error));
+
+      //this.checkLoginAuth();
+      this.checkRegisterAuth();
+  }
+
   render() {
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -68,8 +124,8 @@ export default class SignupForm extends Component {
           </View>
           <TextInput placeholder={"Password"} style={styles.loginInput} autoCapitalize={"none"} autoCorrect={false}
             autoCompleteType={"password"} secureTextEntry={true} 
-            onChangeText={(text) => this.setState({ password: text })} value={this.state.password}/>
-          <Button style={styles.loginButton} textStyle={styles.buttonText}>
+            onChangeText={(text) => this.setState({ password2: text })} value={this.state.password2}/>
+          <Button style={styles.loginButton} textStyle={styles.buttonText} onPress={this.handleRegisterRequest.bind(this)}>
             Log in
           </Button>
           <Text>
