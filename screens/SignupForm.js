@@ -7,12 +7,12 @@ import {
   TextInput,
   Keyboard,
   TouchableWithoutFeedback,
-  AsyncStorage
 } from 'react-native';
 
 import SplashScreen from 'react-native-splash-screen';
 import Button from 'apsl-react-native-button'
 import axios from 'axios';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default class SignupForm extends Component {
   constructor(props) {
@@ -130,7 +130,8 @@ export default class SignupForm extends Component {
             Log in
           </Button>
           <Text>
-            Already a member? login
+            Already a member? <Text onPress={() => this.props.navigation.navigate('LoginForm')}
+            style= {{textDecorationLine: 'underline'}}>login</Text>
           </Text>
         </View>
       </TouchableWithoutFeedback>

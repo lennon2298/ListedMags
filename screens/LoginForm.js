@@ -7,12 +7,12 @@ import {
   TextInput,
   Keyboard,
   TouchableWithoutFeedback,
-  AsyncStorage,
 } from 'react-native';
 
 import SplashScreen from 'react-native-splash-screen';
 import Button from 'apsl-react-native-button';
 import axios from 'axios';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default class LoginForm extends Component {
   
@@ -26,6 +26,7 @@ export default class LoginForm extends Component {
       lastName: "",
       loginAuth: false,
       token: {},
+      userTokenId: {},
     }
   }
 
@@ -137,9 +138,6 @@ export default class LoginForm extends Component {
           <Button style={styles.loginButton} textStyle={styles.buttonText} onPress={this.handleRequest.bind(this)}>
             Log in
           </Button>
-          <Text>
-            Forgotten Password? Reset now
-          </Text>
         </View>
       </TouchableWithoutFeedback>
     );

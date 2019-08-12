@@ -31,7 +31,7 @@ export default class LoginHome extends Component {
               <Button style={styles.loginButton} textStyle={styles.buttonText} onPress={() => this.props.navigation.navigate('LoginPage')} >
                 Log in
               </Button>
-              <Button style={styles.loginButton} textStyle={styles.buttonText}onPress={() => this.props.navigation.navigate('SignupPage')} >
+              <Button style={styles.loginButton} textStyle={styles.buttonText} onPress={() => this.props.navigation.navigate('SignupPage')} >
                 Sign up
               </Button>
               <View style={styles.loginBody}>
@@ -39,9 +39,6 @@ export default class LoginHome extends Component {
               </View>
               <SocialButton type='facebook' text='Continue with Facebook' />
               <SocialButton type="google" text='Continue with Google' style={styles.loginButton} />
-              <Text style={{alignSelf: "center", marginTop: "5%"}}>
-                Continue as a Guest
-              </Text>
             </View>
           </View>
         </View>

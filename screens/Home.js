@@ -25,6 +25,7 @@ import {
   Thumbnail,
 } from 'native-base';
 import axios from 'axios';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default class Home extends Component {
   constructor(props) {
@@ -36,14 +37,25 @@ export default class Home extends Component {
       reloadKey: 0,
       blogData: false,
       addsData: false,
+      userTokenId: [],
     }
   }
-  componentDidMount() {
+  async componentDidMount() {
     // do stuff while splash screen is shown
     // After having done stuff (such as async tasks) hide the splash screen;
+    await AsyncStorage.getItem('user_id').then((userId) => {
+      if (userId) {
+        this.setState({ userTokenId: JSON.parse(userId) });
+        console.log(this.state.userTokenId);
+        axios.defaults.headers.common['Authorization'] = "Token " + this.state.userTokenId.key;
+        console.log(axios.defaults.headers.common.Authorization);
+      }
+    });
+
     this.handleArticleRequest();
     this.handleAddRequest();
     this.handleCategoryRequest();
+    SplashScreen.hide();
   }
 
   async handleArticleRequest() {
@@ -53,7 +65,7 @@ export default class Home extends Component {
     });
     console.log("lolol");
     await instance
-      .get('blog/', {}, {withCredentials: true})
+      .get('blog/', {}, { withCredentials: true })
       .then(async response => {
         await this.setState({ articleDictionary: response.data });
         console.log(response);
@@ -121,7 +133,7 @@ export default class Home extends Component {
 
   renderArticleCards = (data) => {
     return (
-      <TouchableWithoutFeedback onPress={()=>{}}>
+      <TouchableWithoutFeedback onPress={() => { }}>
         <Card style={{ margin: "5%", marginHorizontal: "5%" }}>
           <CardItem>
             <Thumbnail square large source={{ uri: data.item.post_img }} />
@@ -143,27 +155,27 @@ export default class Home extends Component {
 
   renderAddsCards = (data) => {
     return (
-      <TouchableOpacity onPress={()=>{}}>
-          <Card style={{ marginHorizontal: "5%",}}>
-            <CardItem>
-                {console.log(data.item.thumbnail)}
-                <View style={{flex: 1}}>
-                  <Image source={{uri: data.item.thumbnail}} 
-                  style={{resizeMode: "cover", height: 100, width: 100 }} />
-                </View>
-            </CardItem>
-          </Card>
+      <TouchableOpacity onPress={() => { }}>
+        <Card style={{ marginHorizontal: "5%", }}>
+          <CardItem>
+            {console.log(data.item.thumbnail)}
+            <View style={{ flex: 1 }}>
+              <Image source={{ uri: data.item.thumbnail }}
+                style={{ resizeMode: "cover", height: 100, width: 100 }} />
+            </View>
+          </CardItem>
+        </Card>
       </TouchableOpacity>
     )
   }
 
   renderCategoryCard = (data) => {
     return (
-      <TouchableOpacity onPress={()=>{}}>
-            <CardItem>
-                {console.log(data.item.thumbnail)}
-                <Thumbnail large source={{uri: data.item.thumbnail}} />
-            </CardItem>
+      <TouchableOpacity onPress={() => { }}>
+        <CardItem>
+          {console.log(data.item.thumbnail)}
+          <Thumbnail large source={{ uri: data.item.thumbnail }} />
+        </CardItem>
       </TouchableOpacity>
     )
   }
@@ -177,8 +189,8 @@ export default class Home extends Component {
       )
     }
     return (
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss} 
-      accessible={false} key={this.state.reloadKey}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}
+        accessible={false} key={this.state.reloadKey}>
         <Container>
           <Header searchBar rounded>
             <Item>
@@ -190,21 +202,21 @@ export default class Home extends Component {
               </Button>
             </Left>
           </Header>
-            <View>
-              <FlatList
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-                decelerationRate={0}
-                snapToAlignment={"center"}
-                data={this.state.addDictionary}
-                extraData={this.state}
-                keyExtractor={(article, id) => id.toString()}
-                renderItem={data => this.renderAddsCards(data)}
-              />
-            </View>
-            <ScrollView showsVerticalScrollIndicator={false}>
+          <View>
+            <FlatList
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+              decelerationRate={0}
+              snapToAlignment={"center"}
+              data={this.state.addDictionary}
+              extraData={this.state}
+              keyExtractor={(article, id) => id.toString()}
+              renderItem={data => this.renderAddsCards(data)}
+            />
+          </View>
+          <ScrollView showsVerticalScrollIndicator={false}>
             <Card>
-                <Text style={styles.cardHeader}>Categories</Text>
+              <Text style={styles.cardHeader}>Categories</Text>
               <FlatList
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}
@@ -223,7 +235,7 @@ export default class Home extends Component {
               keyExtractor={(article, id) => id.toString()}
               renderItem={data => this.renderArticleCards(data)}
             />
-            </ScrollView>
+          </ScrollView>
         </Container>
       </TouchableWithoutFeedback>
     );

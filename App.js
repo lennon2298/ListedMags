@@ -2,9 +2,10 @@ import React from 'react';
 import {
   Image,
   TouchableOpacity,
-  Button,
+  View,
+  Text,
   ScrollView,
-  SafeAreaView
+  SafeAreaView,
 } from 'react-native';
 import { 
   createStackNavigator, createDrawerNavigator, 
@@ -14,11 +15,14 @@ import LoginForm from './screens/LoginForm';
 import LoginHome from './screens/LoginHome';
 import SignupForm from './screens/SignupForm';
 import Home from './screens/Home';
-import NewHome from './screens/NewHome';
+import Magazines from './screens/Magazines';
+import AuthLoading from './screens/AuthLoading';
+import MagazineView from './screens/MagazineView';
+import MagazinePage from './screens/MagazinePage';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const LoginNavigator = createStackNavigator(
   {
-    Home: Home,
     LoginHome: LoginHome,
     LoginPage: LoginForm,
     SignupPage: SignupForm
@@ -29,12 +33,23 @@ const LoginNavigator = createStackNavigator(
   }
 );
 
+
 const DrawerWithLogoutButton = (props) => (
   <ScrollView contentContainerStyle={{flex: 1,  flexDirection: 'column', justifyContent: 'space-between' }}>
     <SafeAreaView style={{flex: 1}} forceInset={{ top: 'always', horizontal: 'never' }}>
       <DrawerItems {...props} />
     </SafeAreaView>
-    <Button title="Logout" style={{height: "20%"}} />
+    <TouchableOpacity style={{height: "7%", justifyContent: "center", 
+      alignItems: "center", backgroundColor: "#208DE1"}} onPress={() => {
+        AsyncStorage.clear();
+        props.navigation.navigate('Auth');
+      }} >
+      <View>
+        <Text style={{color: "#ffffff", fontWeight: "700"}}>
+          Logout
+        </Text>
+      </View>
+    </TouchableOpacity>
   </ScrollView>
 );
 
@@ -43,8 +58,8 @@ const DrawerNavigator = createDrawerNavigator(
     Home: {
       screen: Home,
     },
-    NewHome: {
-      screen: NewHome,
+    Magazine: {
+      screen: Magazines,
     },
   },
   {
@@ -60,8 +75,10 @@ const DrawerNavigator = createDrawerNavigator(
 
 const AppNavigator = createStackNavigator(
   {
-    DrawerStack: { screen: DrawerNavigator,  }
-  }, 
+    DrawerStack: { screen: DrawerNavigator },
+    MagazineView: { screen: MagazineView },
+    MagazinePage: { screen: MagazinePage },
+  },
   {
     headerMode: 'float',
     defaultNavigationOptions: ({navigation}) => ({
@@ -81,10 +98,11 @@ const AppNavigator = createStackNavigator(
 
 export default createAppContainer(createSwitchNavigator(
   {
+    AuthLoading: AuthLoading,
     App: AppNavigator,
     Auth: LoginNavigator,
   },
   {
-    initialRouteName: 'Auth',
+    initialRouteName: 'AuthLoading',
   }
 ));
