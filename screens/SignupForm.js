@@ -7,6 +7,7 @@ import {
   TextInput,
   Keyboard,
   TouchableWithoutFeedback,
+  AsyncStorage
 } from 'react-native';
 
 import SplashScreen from 'react-native-splash-screen';
@@ -50,12 +51,12 @@ export default class SignupForm extends Component {
   }
 
   checkRegisterAuth() {
-    if(this.state.loginAuth)
+    if(this.state.RegisterAuth)
     {
       //alert("Authenticated");
       console.log("Authenticated\n" + this.state.email + "\n" +
        this.state.password + "\n" + this.state.token.key);
-      this.props.navigation.navigate('Home');
+      this.props.navigation.navigate('App');
     }
     else{
       //alert("Not Authenticated\n" + this.state.email + "\n" + this.state.password);
@@ -68,7 +69,7 @@ export default class SignupForm extends Component {
   async handleRegisterRequest() {
     //const endpoint = this.props.create ? 'register' : 'login';
     const instance = axios.create({
-      baseURL: 'http://192.168.43.228:8000/',
+      baseURL: 'http://192.168.2.209:8000/',
       timeout: 5000,
     });
     const payload = { email: this.state.email, password1: this.state.password, password2: this.state.password2 }
@@ -87,12 +88,12 @@ export default class SignupForm extends Component {
         const user = AsyncStorage.getItem('user_id');
         console.log(user.key);
         // We set the returned token as the default authorization header
-        axios.defaults.headers.common.Authorization = this.state.token;
+        axios.defaults.headers.common = {'Authorization': 'Bearer ' + JSON.stringify(this.state.token)};
         console.log(response);
         console.log("XD");
         this.setState({RegisterAuth: true});
-        console.log(axios.defaults.headers.common.Authorization.key);
-        this.props.navigation.navigate('Home');
+        console.log(axios.defaults.headers.common.Authorization);
+        //this.props.navigation.navigate('Home');
       })
       .catch(error => console.log(error));
 

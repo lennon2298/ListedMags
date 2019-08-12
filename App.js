@@ -1,12 +1,15 @@
 import React from 'react';
 import {
   Image,
-  TouchableOpacity
+  TouchableOpacity,
+  Button,
+  ScrollView,
+  SafeAreaView
 } from 'react-native';
 import { 
   createStackNavigator, createDrawerNavigator, 
   createAppContainer, createSwitchNavigator, 
-  DrawerActions } from "react-navigation";
+  DrawerActions, DrawerItems } from "react-navigation";
 import LoginForm from './screens/LoginForm';
 import LoginHome from './screens/LoginHome';
 import SignupForm from './screens/SignupForm';
@@ -26,6 +29,15 @@ const LoginNavigator = createStackNavigator(
   }
 );
 
+const DrawerWithLogoutButton = (props) => (
+  <ScrollView contentContainerStyle={{flex: 1,  flexDirection: 'column', justifyContent: 'space-between' }}>
+    <SafeAreaView style={{flex: 1}} forceInset={{ top: 'always', horizontal: 'never' }}>
+      <DrawerItems {...props} />
+    </SafeAreaView>
+    <Button title="Logout" style={{height: "20%"}} />
+  </ScrollView>
+);
+
 const DrawerNavigator = createDrawerNavigator(
   {
     Home: {
@@ -36,6 +48,7 @@ const DrawerNavigator = createDrawerNavigator(
     },
   },
   {
+    contentComponent: DrawerWithLogoutButton,
     drawerBackgroundColor: 'rgba(250,250,250,.9)',
     overlayColor: 'rgba(255,255,255,.3)',
     contentOptions: {
@@ -61,9 +74,7 @@ const AppNavigator = createStackNavigator(
           <Image source={require('./res/drawer.png')} style={{marginLeft: 10}} />
         </TouchableOpacity>
       ),
-      headerRight: (
-        <Image source={require('./res/subscribe.png')} style={{marginRight: 10}} />
-      ),
+      
     }),
   }
 );

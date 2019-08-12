@@ -74,7 +74,7 @@ export default class LoginForm extends Component {
   async handleRequest() {
     //const endpoint = this.props.create ? 'register' : 'login';
     const instance = axios.create({
-      baseURL: 'http://192.168.43.228:8000/rest/auth/',
+      baseURL: 'http://192.168.2.209:8000/rest/auth/',
       timeout: 1500,
     });
     const payload = { email: this.state.email, password: this.state.password }
@@ -91,10 +91,11 @@ export default class LoginForm extends Component {
         this.state.token = response.data;
         AsyncStorage.setItem('user_id', JSON.stringify(response.data));
         const user = AsyncStorage.getItem('user_id');
-        console.log(user.key);
+        console.log(user);
         // We set the returned token as the default authorization header
-        axios.defaults.headers.common.Authorization = {'Authorization': `Bearer ${this.state.token}`};
+        axios.defaults.headers.common['Authorization'] = "Token " + this.state.token.key;
         console.log(response);
+        console.log(this.state.token);
         console.log("XD");
         this.setState({loginAuth: true});
         console.log(axios.defaults.headers.common.Authorization);
@@ -106,7 +107,7 @@ export default class LoginForm extends Component {
   }
   async handleLogoutRequest() {
     const instance = axios.create({
-      baseURL: 'http://192.168.43.228:8000/rest/auth/',
+      baseURL: 'http://192.168.2.209:8000/rest/auth/',
       timeout: 1500,
     });
     await instance
