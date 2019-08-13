@@ -19,6 +19,7 @@ import Magazines from './screens/Magazines';
 import AuthLoading from './screens/AuthLoading';
 import MagazineView from './screens/MagazineView';
 import MagazinePage from './screens/MagazinePage';
+import PollView from './screens/PollView';
 import AsyncStorage from '@react-native-community/async-storage';
 
 const LoginNavigator = createStackNavigator(
@@ -63,6 +64,7 @@ const DrawerNavigator = createDrawerNavigator(
     },
   },
   {
+    unmountInactiveRoutes: true,
     contentComponent: DrawerWithLogoutButton,
     drawerBackgroundColor: 'rgba(250,250,250,.9)',
     overlayColor: 'rgba(255,255,255,.3)',
@@ -78,10 +80,12 @@ const AppNavigator = createStackNavigator(
     DrawerStack: { screen: DrawerNavigator },
     MagazineView: { screen: MagazineView },
     MagazinePage: { screen: MagazinePage },
+    PollView: { screen: PollView },
   },
   {
     headerMode: 'float',
     defaultNavigationOptions: ({navigation}) => ({
+      unmountInactiveRoutes: true,
       headerTitle: (
         <Image source={require('./res/logo.png')} resizeMode={'contain'} 
           style={{width: "50%", alignSelf: "center", marginHorizontal: "20%"}} />
