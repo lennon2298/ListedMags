@@ -5,7 +5,6 @@ import {
   Text,
   StatusBar,
   Image,
-  TouchableOpacity,
 } from 'react-native';
 import {
   Card,

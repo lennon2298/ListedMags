@@ -8,7 +8,7 @@ import {
   FlatList,
   ActivityIndicator
 } from 'react-native';
-import Button from 'apsl-react-native-button'
+import Button from 'apsl-react-native-button';
 import axios from 'axios';
 
 export default class PollView extends Component {

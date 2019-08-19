@@ -3,6 +3,7 @@ import {
   View,
 } from 'react-native';
 import WebView from 'react-native-webview';
+import AutoHeightWebView from 'react-native-autoheight-webview'
 
 export default class MagazineView extends Component {
   render() {
@@ -15,7 +16,8 @@ export default class MagazineView extends Component {
         {console.log(url)}
         <WebView
           bounces={false}
-          scrollEnabled={false}
+          scrollEnabled={true}
+          zoomable={false}
           source={{ uri: url }} />
       </View>
     );

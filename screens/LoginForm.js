@@ -91,8 +91,12 @@ export default class LoginForm extends Component {
       .then(response => {
         this.state.token = response.data;
         AsyncStorage.setItem('user_id', JSON.stringify(response.data));
+        AsyncStorage.setItem('user_email', this.state.email);
         const user = AsyncStorage.getItem('user_id');
         console.log(user);
+        const userEmail = AsyncStorage.getItem('user_email');
+        console.log("userEmail" + userEmail);
+        console.log("USER EMAIL: " + userEmail);
         // We set the returned token as the default authorization header
         axios.defaults.headers.common['Authorization'] = "Token " + this.state.token.key;
         console.log(response);

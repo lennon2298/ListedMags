@@ -40,6 +40,7 @@ export default class Home extends Component {
       blogData: false,
       addsData: false,
       userTokenId: [],
+      userEmailId: "",
     }
   }
   async componentDidMount() {
@@ -51,6 +52,13 @@ export default class Home extends Component {
         console.log(this.state.userTokenId);
         axios.defaults.headers.common['Authorization'] = "Token " + this.state.userTokenId.key;
         console.log(axios.defaults.headers.common.Authorization);
+      }
+    });
+
+    await AsyncStorage.getItem('user_email').then((userEmail) => {
+      if (userEmail) {
+        this.setState({ userEmailId: userEmail });
+        console.log("User email: " + this.state.userEmailId);
       }
     });
 
@@ -157,9 +165,13 @@ export default class Home extends Component {
     //continue;
   }
 
+  renderArticleView(data) {
+    this.props.navigation.navigate('ArticleView', {articleData : data})
+  }
+
   renderArticleCards = (data) => {
     return (
-      <TouchableWithoutFeedback onPress={() => { }}>
+      <TouchableWithoutFeedback onPress={() => this.renderArticleView(data)}>
         <Card style={{ margin: "5%", marginHorizontal: "5%" }}>
           <CardItem>
             <Thumbnail square large source={{ uri: data.item.post_img }} />

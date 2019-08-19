@@ -20,6 +20,7 @@ import AuthLoading from './screens/AuthLoading';
 import MagazineView from './screens/MagazineView';
 import MagazinePage from './screens/MagazinePage';
 import PollView from './screens/PollView';
+import ArticleView from './screens/ArticleView';
 import AsyncStorage from '@react-native-community/async-storage';
 
 const LoginNavigator = createStackNavigator(
@@ -81,6 +82,7 @@ const AppNavigator = createStackNavigator(
     MagazineView: { screen: MagazineView },
     MagazinePage: { screen: MagazinePage },
     PollView: { screen: PollView },
+    ArticleView: { screen: ArticleView },
   },
   {
     headerMode: 'float',
