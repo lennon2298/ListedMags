@@ -21,7 +21,9 @@ import MagazineView from './screens/MagazineView';
 import MagazinePage from './screens/MagazinePage';
 import PollView from './screens/PollView';
 import ArticleView from './screens/ArticleView';
+import ArticleListView from './screens/ArticleListView';
 import AsyncStorage from '@react-native-community/async-storage';
+import axios from 'axios';
 
 const LoginNavigator = createStackNavigator(
   {
@@ -44,6 +46,7 @@ const DrawerWithLogoutButton = (props) => (
     <TouchableOpacity style={{height: "7%", justifyContent: "center", 
       alignItems: "center", backgroundColor: "#208DE1"}} onPress={() => {
         AsyncStorage.clear();
+        axios.defaults.headers.common['Authorization'] = '';
         props.navigation.navigate('Auth');
       }} >
       <View>
@@ -83,6 +86,7 @@ const AppNavigator = createStackNavigator(
     MagazinePage: { screen: MagazinePage },
     PollView: { screen: PollView },
     ArticleView: { screen: ArticleView },
+    ArticleListView: { screen: ArticleListView },
   },
   {
     headerMode: 'float',

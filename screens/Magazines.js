@@ -11,12 +11,8 @@ import {
   Dimensions,
 } from 'react-native';
 import {
-  Container,
-  Button,
   Card,
   CardItem,
-  Thumbnail,
-  Icon,
 } from 'native-base';
 import axios from 'axios';
 
@@ -28,15 +24,15 @@ export default class Magazines extends Component {
       magData: false,
     }
   }
-  componentDidMount() {
+  async componentDidMount() {
     // do stuff while splash screen is shown
     // After having done stuff (such as async tasks) hide the splash screen
-    this.handleMagazineRequest();
+    await this.handleMagazineRequest();
   }
 
   async handleMagazineRequest() {
     const instance = axios.create({
-      baseURL: 'http://192.168.2.209:8000/',
+      baseURL: 'http://165.22.213.1/',
       timeout: 1500,
     });
 
@@ -50,7 +46,10 @@ export default class Magazines extends Component {
         console.log(this.state.magazineDictionary);
         this.setState({ magData: true });
       })
-      .catch(error => console.log(error));
+      .catch(async error => {
+        console.log(error);
+        await this.handleMagazineRequest();
+      });
     //this.checkLoginAuth();
     //this.render();
   }
@@ -70,7 +69,7 @@ export default class Magazines extends Component {
                   style={{resizeMode:"cover", height: 250, flex: 1}} />
             </CardItem>
             <CardItem>
-              <Text>
+              <Text style={{textTransform: "capitalize"}}>
                 {data.item.title}
               </Text>
             </CardItem>

@@ -13,6 +13,7 @@ import SplashScreen from 'react-native-splash-screen';
 import Button from 'apsl-react-native-button';
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
+import Toast, {DURATION} from 'react-native-easy-toast';
 
 export default class LoginForm extends Component {
   
@@ -75,7 +76,7 @@ export default class LoginForm extends Component {
   async handleRequest() {
     //const endpoint = this.props.create ? 'register' : 'login';
     const instance = axios.create({
-      baseURL: 'http://192.168.2.209:8000/rest/auth/',
+      baseURL: 'http://165.22.213.1/rest/auth/',
       timeout: 1500,
     });
     const payload = { email: this.state.email, password: this.state.password }
@@ -106,13 +107,26 @@ export default class LoginForm extends Component {
         console.log(axios.defaults.headers.common.Authorization);
         //this.props.navigation.navigate('Home');
       })
-      .catch(error => console.log(error));
-
+      .catch(error => {
+        console.log(error);
+        if (error.response) {
+          console.log("error data" + error.response.data);
+          console.log("error status" + error.response.status);
+          console.log("error header" + error.response.headers);
+          this.refs.toast.show('Username or Password incorrect!');
+        } else if (error.request) {
+          console.log("error request" + error.request);
+          this.refs.toast.show('Network Error');
+        } else {
+          console.log('Error', error.message);
+        }
+        console.log(error.config);
+      });
       this.checkLoginAuth();
   }
   async handleLogoutRequest() {
     const instance = axios.create({
-      baseURL: 'http://192.168.2.209:8000/rest/auth/',
+      baseURL: 'http://165.22.213.1/rest/auth/',
       timeout: 1500,
     });
     await instance
@@ -142,6 +156,7 @@ export default class LoginForm extends Component {
           <Button style={styles.loginButton} textStyle={styles.buttonText} onPress={this.handleRequest.bind(this)}>
             Log in
           </Button>
+          <Toast ref="toast"/>
         </View>
       </TouchableWithoutFeedback>
     );

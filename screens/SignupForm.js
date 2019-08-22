@@ -23,6 +23,7 @@ export default class SignupForm extends Component {
       password2: "",
       validated: false,
       RegisterAuth: false,
+      token: {},
     }
   }
   componentDidMount() {
@@ -69,7 +70,7 @@ export default class SignupForm extends Component {
   async handleRegisterRequest() {
     //const endpoint = this.props.create ? 'register' : 'login';
     const instance = axios.create({
-      baseURL: 'http://192.168.2.209:8000/',
+      baseURL: 'http://165.22.213.1/',
       timeout: 5000,
     });
     const payload = { email: this.state.email, password1: this.state.password, password2: this.state.password2 }
@@ -82,18 +83,33 @@ export default class SignupForm extends Component {
     console.log("lolol");
     await instance
       .post('api/users/', payload)
-      .then(response => {
-        this.state.token = response.data;
-        AsyncStorage.setItem('user_id', JSON.stringify(response.data));
-        const user = AsyncStorage.getItem('user_id');
-        console.log(user.key);
-        // We set the returned token as the default authorization header
-        axios.defaults.headers.common = {'Authorization': 'Bearer ' + JSON.stringify(this.state.token)};
-        console.log(response);
-        console.log("XD");
-        this.setState({RegisterAuth: true});
-        console.log(axios.defaults.headers.common.Authorization);
+      .then(async response => {
+        // this.state.token = response.data;
+        // AsyncStorage.setItem('user_id', JSON.stringify(response.data));
+        // const user = AsyncStorage.getItem('user_id');
+        // console.log(user.key);
+        // // We set the returned token as the default authorization header
+        // axios.defaults.headers.common = {'Authorization': 'Bearer ' + JSON.stringify(this.state.token)};
+        // console.log(response);
+        // console.log("XD");
+        // this.setState({RegisterAuth: true});
+        // console.log(axios.defaults.headers.common.Authorization);
         //this.props.navigation.navigate('Home');
+        this.state.token = response.data;
+        await AsyncStorage.setItem('user_id', JSON.stringify(response.data));
+        await AsyncStorage.setItem('user_email', this.state.email);
+        const user = AsyncStorage.getItem('user_id');
+        console.log(user);
+        const userEmail = AsyncStorage.getItem('user_email');
+        console.log("userEmail" + userEmail);
+        console.log("USER EMAIL: " + userEmail);
+        // We set the returned token as the default authorization header
+        axios.defaults.headers.common['Authorization'] = "Token " + this.state.token.key;
+        console.log(response);
+        console.log(this.state.token);
+        console.log("XD");
+        this.setState({RegisterAuth: true})
+        console.log(axios.defaults.headers.common.Authorization);
       })
       .catch(error => console.log(error));
 

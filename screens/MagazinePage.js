@@ -41,7 +41,7 @@ export default class Magazines extends Component {
           <CardItem>
             <Image source={{ uri: this.state.magData.thumbnail }} style={{height: 200, width: 150}} />
             <View style={{ marginHorizontal: "5%", marginVertical: "2%", alignSelf: "flex-start"}}>
-              <Text style={{ fontWeight: "700", fontSize: 22,}}>
+              <Text style={{ fontWeight: "700", fontSize: 22, textTransform: "capitalize"}}>
                 {console.log(this.state.magData.title)}
                 {this.state.magData.title}
               </Text>

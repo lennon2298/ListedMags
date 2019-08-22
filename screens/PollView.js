@@ -34,7 +34,7 @@ export default class PollView extends Component {
   async handlePollRequest() {
     //const endpoint = this.props.create ? 'register' : 'login';
     const instance = axios.create({
-      baseURL: 'http://192.168.2.209:8000/polls',
+      baseURL: 'http://165.22.213.1/polls',
       timeout: 1500,
     });
 
@@ -58,7 +58,7 @@ export default class PollView extends Component {
   async handleChoiceRequest() {
     //const endpoint = this.props.create ? 'register' : 'login';
     const instance = axios.create({
-      baseURL: 'http://192.168.2.209:8000/polls',
+      baseURL: 'http://165.22.213.1/polls',
       timeout: 1500,
     });
 
@@ -74,7 +74,10 @@ export default class PollView extends Component {
         console.log(this.state.choicesDictionary);
         this.setState({ choicesRecieved: true });
       })
-      .catch(error => console.log(error));
+      .catch(async error => {
+        console.log(error);
+        await this.handleChoiceRequest();
+      });
     //this.checkLoginAuth();
     //this.render();
   }
@@ -82,7 +85,7 @@ export default class PollView extends Component {
   async handleChoiceSubmit(choice) {
     //const endpoint = this.props.create ? 'register' : 'login';
     const instance = axios.create({
-      baseURL: 'http://192.168.2.209:8000/polls',
+      baseURL: 'http://165.22.213.1/polls',
       timeout: 1500,
     });
 
@@ -90,7 +93,7 @@ export default class PollView extends Component {
     console.log("lolol");
     console.log(choice)
     const url = '/' + this.props.navigation.state.params.pollData + '/choices/' + choice + '/';
-    console.log('http://192.168.2.209:8000/polls' + url);
+    console.log('http://165.22.213.1/polls' + url);
     await instance
       .post(url, { withCredentials: true })
       .then(async response => {
@@ -190,7 +193,7 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').height/2.2,
     shadowColor: 'rgba(14, 12, 25, 0.31)',
     shadowRadius: 10,
-    borderRadius: 25,
+    borderRadius: 2,
     borderColor: 'rgba(14, 12, 25, 0.21)',
     borderWidth: 1,
     elevation: 2,

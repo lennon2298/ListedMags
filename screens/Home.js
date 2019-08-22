@@ -15,12 +15,7 @@ import {
 
 import SplashScreen from 'react-native-splash-screen';
 import {
-  Header,
   Container,
-  Input,
-  Item,
-  Button,
-  Left,
   Card,
   CardItem,
   Thumbnail,
@@ -63,15 +58,16 @@ export default class Home extends Component {
     });
 
     await this.handleCategoryRequest();
-    this.handleArticleRequest();
-    this.handleAddRequest();
-    this.handlePollRequest();
+    await this.handleArticleRequest();
+    await this.handleAddRequest();
+    await this.handlePollRequest();
+    
     SplashScreen.hide();
   }
 
   async handleArticleRequest() {
     const instance = axios.create({
-      baseURL: 'http://192.168.2.209:8000/',
+      baseURL: 'http://165.22.213.1/',
       timeout: 1500,
     });
     console.log("lolol");
@@ -84,7 +80,20 @@ export default class Home extends Component {
         console.log(this.state.articleDictionary);
         this.setState({ blogData: true });
       })
-      .catch(error => console.log(error));
+      .catch(async error => {
+        console.log(error);
+        if (error.response) {
+          console.log("error data" + error.response.data);
+          console.log("error status" + error.response.status);
+          console.log("error header" + error.response.headers);
+        } else if (error.request) {
+          console.log("error request" + error.request);
+        } else {
+          console.log('Error', error.message);
+        }
+        console.log(error.config);
+        await this.handleArticleRequest();
+      });
     //this.checkLoginAuth();
     //this.render();
   }
@@ -92,7 +101,7 @@ export default class Home extends Component {
   async handleAddRequest() {
     //const endpoint = this.props.create ? 'register' : 'login';
     const instance = axios.create({
-      baseURL: 'http://192.168.2.209:8000/',
+      baseURL: 'http://165.22.213.1/',
       timeout: 1500,
     });
 
@@ -108,7 +117,10 @@ export default class Home extends Component {
         console.log(this.state.addDictionary);
         this.setState({ addData: true });
       })
-      .catch(error => console.log(error));
+      .catch(async error => {
+        console.log(error);
+        await this.handleAddRequest();
+      });
     //this.checkLoginAuth();
     //this.render();
   }
@@ -116,7 +128,7 @@ export default class Home extends Component {
   async handleCategoryRequest() {
     //const endpoint = this.props.create ? 'register' : 'login';
     const instance = axios.create({
-      baseURL: 'http://192.168.2.209:8000/',
+      baseURL: 'http://165.22.213.1/',
       timeout: 1500,
     });
 
@@ -132,7 +144,20 @@ export default class Home extends Component {
         console.log(this.state.categoryDictionary);
         this.setState({ categoryData: true });
       })
-      .catch(error => console.log(error));
+      .catch(async error => {
+        console.log(error);
+        if (error.response) {
+          console.log("error data" + error.response.data);
+          console.log("error status" + error.response.status);
+          console.log("error header" + error.response.headers);
+        } else if (error.request) {
+          console.log("error request" + error.request);
+        } else {
+          console.log('Error', error.message);
+        }
+        console.log(error.config);
+        await this.handleCategoryRequest();
+      });
     //this.checkLoginAuth();
     //this.render();
   }
@@ -140,7 +165,7 @@ export default class Home extends Component {
   async handlePollRequest() {
     //const endpoint = this.props.create ? 'register' : 'login';
     const instance = axios.create({
-      baseURL: 'http://192.168.2.209:8000/',
+      baseURL: 'http://165.22.213.1/',
       timeout: 1500,
     });
 
@@ -155,7 +180,10 @@ export default class Home extends Component {
         console.log("XD");
         console.log(this.state.pollDictionary);
       })
-      .catch(error => console.log(error));
+      .catch(async error => {
+        console.log(error);
+        await this.handlePollRequest();
+      });
     //this.checkLoginAuth();
     //this.render();
   }
@@ -176,13 +204,14 @@ export default class Home extends Component {
           <CardItem>
             <Thumbnail square large source={{ uri: data.item.post_img }} />
             <View style={{ marginHorizontal: "5%", }}>
-              <Text style={{ fontWeight: "700", fontSize: 22, }}>
+              <Text style={{ fontWeight: "700", fontSize: 22, textTransform: "capitalize"}}>
                 {console.log(data.item.title)}
                 {data.item.title}
               </Text>
               <Text >
                 {console.log(data.item.post_cat)}
-                {this.state.categoryDictionary[data.item.post_cat].cat_name}
+                {/* {console.log(this.state.categoryDictionary[data.item.post_cat].cat_name)} */}
+                {data.item.post_cat}
               </Text>
             </View>
           </CardItem>
@@ -229,11 +258,15 @@ export default class Home extends Component {
     this.props.navigation.navigate('PollView', {pollData : data})
   }
 
+  renderArticleListView(data) {
+    this.props.navigation.navigate('ArticleListView', {categoryData : data})
+  }
+
   renderCategoryCard = (data) => {
     return (
-      <TouchableOpacity onPress={() => { }}>
+      <TouchableOpacity onPress={() => this.renderArticleListView(data.index + 1)}>
         <CardItem>
-          {console.log(data.item.thumbnail)}
+          {console.log(data)}
           <Thumbnail large source={{ uri: data.item.thumbnail }} />
         </CardItem>
       </TouchableOpacity>
@@ -252,29 +285,19 @@ export default class Home extends Component {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}
         accessible={false} key={this.state.reloadKey}>
         <Container>
-          <Header searchBar rounded>
-            <Item>
-              <Input placeholder="Search" />
-            </Item>
-            <Left>
-              <Button light rounded full style={styles.buttonStyle}>
-                <Text>Search</Text>
-              </Button>
-            </Left>
-          </Header>
-          <View>
-            <FlatList
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-              decelerationRate={0}
-              snapToAlignment={"center"}
-              data={this.state.addDictionary}
-              extraData={this.state}
-              keyExtractor={(article, id) => id.toString()}
-              renderItem={data => this.renderAddsCards(data)}
-            />
-          </View>
           <ScrollView showsVerticalScrollIndicator={false}>
+            <View>
+              <FlatList
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                decelerationRate={0}
+                snapToAlignment={"center"}
+                data={this.state.addDictionary}
+                extraData={this.state}
+                keyExtractor={(article, id) => id.toString()}
+                renderItem={data => this.renderAddsCards(data)}
+              />
+            </View>
             <Text style={styles.pollHeader}>
               Polls
             </Text>

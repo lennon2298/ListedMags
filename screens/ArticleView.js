@@ -31,6 +31,7 @@ export default class ArticleView extends Component {
       commentData: [],
       newComment: "",
       userEmailId: "",
+      reloadComments: false,
     }
   }
   async componentDidMount() {
@@ -47,12 +48,12 @@ export default class ArticleView extends Component {
     this.setState({ dateCreated: new Date(date) });
     console.log(this.state.dateCreated)
     this.setState({ date: format(this.state.dateCreated, 'Do MMM') });
-    this.handleCommentRequest();
+    await this.handleCommentRequest();
   }
 
   async handleCommentRequest() {
     const instance = axios.create({
-      baseURL: 'http://192.168.2.209:8000/',
+      baseURL: 'http://165.22.213.1/',
       timeout: 1500,
     });
     console.log("lolol");
@@ -65,14 +66,17 @@ export default class ArticleView extends Component {
         console.log(this.state.commentData);
         this.setState({ blogData: true });
       })
-      .catch(error => console.log(error));
+      .catch(async error => {
+        console.log(error);
+        await this.handleCommentRequest();
+      });
     //this.checkLoginAuth();
     //this.render();
   }
 
   renderComments = (data) => {
     return (
-      <View style={{ flexDirection: "row", marginBottom: "1%", alignContent: "flex-start" }}>
+      <View style={{ flexDirection: "row", marginBottom: "2%", alignContent: "flex-start"}}>
         <Thumbnail small source={require('../res/avatar.jpg')} />
         <View flexDirection="column">
         <Text style={{marginHorizontal: "5%", justifyContent: "center", color: "#208de1ff"}}>
@@ -87,33 +91,40 @@ export default class ArticleView extends Component {
   }
 
   async handleCommentPost() {
-    const instance = axios.create({
-      baseURL: 'http://192.168.2.209:8000/',
-      timeout: 1500,
-    });
-    console.log("lolol");
-    const commentData = {
-      text: this.state.newComment,
-      user: this.state.userEmailId,
-    };
-    // const commentData = {}
-    // commentData["user"] = this.state.userEmailId
-    // commentData["text"] = this.state.newComment
-    // commentData.push({user: })
-    // commentData.push({text: this.state.newComment})
-    //console.log(JSON.stringify(commentData))
-    await instance
-      .post('blog/' + this.state.articleData.id + '/comments/post/', commentData)
-      .then(async response => {
-        //await this.setState({ commentData: response.data });
-        console.log(response);
-        console.log("XD comment posted");
-        //console.log(this.state.commentData);
-        this.setState({ newComment: "" });
-      })
-      .catch(error => console.log(error));
-    //this.checkLoginAuth();
-    //this.render();
+    if(this.state.newComment == '') {
+      return
+    }
+    else{ 
+      const instance = axios.create({
+        baseURL: 'http://165.22.213.1/',
+        timeout: 1500,
+      });
+      console.log("lolol");
+      const commentData = {
+        text: this.state.newComment,
+        user: this.state.userEmailId,
+      };
+      // const commentData = {}
+      // commentData["user"] = this.state.userEmailId
+      // commentData["text"] = this.state.newComment
+      // commentData.push({user: })
+      // commentData.push({text: this.state.newComment})
+      //console.log(JSON.stringify(commentData))
+      await instance
+        .post('blog/' + this.state.articleData.id + '/comments/post/', commentData)
+        .then(async response => {
+          //await this.setState({ commentData: response.data });
+          console.log(response);
+          console.log("XD comment posted");
+          //console.log(this.state.commentData);
+          this.setState({ newComment: "" });
+          await this.handleCommentRequest();
+          this.setState({reloadComments: !this.state.reloadComments})
+        })
+        .catch(error => console.log(error));
+      //this.checkLoginAuth();
+      //this.render();
+    }
   }
 
   render() {
@@ -147,21 +158,21 @@ export default class ArticleView extends Component {
           <Text style={styles.commentHeader}>
             {'Comments: '}
           </Text>
-          <View style={{ marginBottom: "1%" }}>
               <FlatList
                 showsVerticalScrollIndicator={false}
                 data={this.state.commentData}
-                extraData={this.state}
+                extraData={this.state.reloadComments}
                 keyExtractor={(article, id) => id.toString()}
                 renderItem={data => this.renderComments(data)}
               />
-            <View style={{ marginBottom: "1%", flexDirection: "row", marginTop: "2%" }}>
+            <View style={{flexDirection: "row", marginTop: "3%",}}>
               <Thumbnail small source={require('../res/avatar.jpg')} />
+              <View style={{flex: 1, alignItems: "stretch"}}>
               <TextInput placeholder={"Type Something"} autoCapitalize={"none"} autoCorrect={false}
                 style={styles.inputText} onChangeText={(text) => this.setState({ newComment: text })}
                 value={this.state.newComment} multiline={true} numberOfLines={4} />
+              </View>
             </View>
-          </View>
           <Button style={styles.commentButton} textStyle={styles.buttonText}
             onPress={() => this.handleCommentPost()}>
             Post
@@ -184,6 +195,7 @@ const styles = StyleSheet.create({
   titleText: {
     fontWeight: "700",
     fontSize: 27,
+    textTransform: "capitalize"
   },
   articleImage: {
     height: Dimensions.get('window').height * 0.25,
@@ -194,12 +206,15 @@ const styles = StyleSheet.create({
     alignContent: "center"
   },
   inputText: {
-    width: "85%",
+    flex: 1,
     borderWidth: 1,
     alignSelf: "center",
     borderRadius: 6,
     marginHorizontal: "2%",
-    textAlignVertical: 'top'
+    textAlignVertical: 'top',
+    marginBottom: "2%",
+    alignItems: "stretch",
+    width: "96%"
   },
   titleImage: {
     flex: 1,
@@ -221,7 +236,6 @@ const styles = StyleSheet.create({
     marginVertical: "2%"
   },
   commentHeader: {
-    color: '#208de1ff',
     marginVertical: "2%",
     fontSize: 22
   },

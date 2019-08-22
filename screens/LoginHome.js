@@ -12,6 +12,7 @@ import Button from 'apsl-react-native-button';
 import SocialButton from 'rtg-rn-social-buttons';
 import {google, facebook} from 'react-native-simple-auth';
 import axios from 'axios';
+import AsyncStorage from '@react-native-community/async-storage';
 // import OAuthManager from 'react-native-oauth';
 
 // const config =  {
@@ -36,8 +37,8 @@ const googleConfig = {
 }
 
 const facebookConfig = {
-  appId: '2339211222800047',
-  callback: 'fb2339211222800047://authorize',
+  appId: '570820697073921',
+  callback: 'fb570820697073921://authorize',
 }
 
 export default class LoginHome extends Component {
@@ -46,6 +47,8 @@ export default class LoginHome extends Component {
     this.state = {
       userId: '',
       RegisterAuth: false,
+      token: {},
+      email: '',
     }
   }
   componentDidMount() {
@@ -81,6 +84,8 @@ export default class LoginHome extends Component {
         console.log(info);
         //this.setState({userId: info.credentials.access_token});
         this.setState({userId: info.credentials.access_token});
+        this.setState({email: info.user.email})
+        console.log(info.user.email)
         this.handleRegisterRequest();
       })
       .catch((error) => {
@@ -99,15 +104,14 @@ export default class LoginHome extends Component {
     else{
       //alert("Not Authenticated\n" + this.state.email + "\n" + this.state.password);
       //alert()
-      alert("Not Authenticated\n" + this.state.email + "\n" +
-       this.state.password + "\n");
+      console.log("Not Authenticated\n" + "\n");
     }
   }
 
   async handleRegisterRequest() {
     //const endpoint = this.props.create ? 'register' : 'login';
     const instance = axios.create({
-      baseURL: 'http://192.168.2.209:8000/',
+      baseURL: 'http://165.22.213.1/',
       timeout: 5000,
     });
     //const payload = { email: this.state.email, password1: this.state.password, password2: this.state.password2 }
@@ -119,17 +123,22 @@ export default class LoginHome extends Component {
     //alert("xs");
     console.log("lolol");
     await instance
-      .post('rest/auth/facebook/', payload)
-      .then(response => {
+      .post('api/users/facebook/login/', payload)
+      .then(async response => {
         this.state.token = response.data;
-        AsyncStorage.setItem('user_id', JSON.stringify(response.data));
+        await AsyncStorage.setItem('user_id', JSON.stringify(response.data));
+        await AsyncStorage.setItem('user_email', this.state.email);
         const user = AsyncStorage.getItem('user_id');
-        console.log(user.key);
+        console.log(user);
+        const userEmail = AsyncStorage.getItem('user_email');
+        console.log("userEmail" + userEmail);
+        console.log("USER EMAIL: " + userEmail);
         // We set the returned token as the default authorization header
-        axios.defaults.headers.common = {'Authorization': 'Bearer ' + JSON.stringify(this.state.token)};
+        axios.defaults.headers.common['Authorization'] = "Token " + this.state.token.key;
         console.log(response);
+        console.log(this.state.token);
         console.log("XD");
-        this.setState({RegisterAuth: true});
+        this.setState({RegisterAuth: true})
         console.log(axios.defaults.headers.common.Authorization);
         //this.props.navigation.navigate('Home');
       })
@@ -158,8 +167,6 @@ export default class LoginHome extends Component {
                 <Text style={styles.loginText} allowFontScaling={true} maxFontSizeMultiplier={5}>or</Text>
               </View>
               <SocialButton type='facebook' text='Continue with Facebook' action={this.handleFacebookLogin} />
-              <SocialButton type="google" text='Continue with Google' style={styles.loginButton} 
-              action={this.handleGoogleLogin} />
             </View>
           </View>
         </View>
