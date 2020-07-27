@@ -10,9 +10,9 @@ export default class MagazineView extends Component {
     //const sampleUrl = this.props.navigation.state.params.magazineData;
     //const sampleUrl = 'https://www.google.com/'
     return (
-      <View style={{flex: 1}}>
-        {console.log("XDXDXDXD")}
-        {console.log(url)}
+      <View style={{ flex: 1 }}>
+        {/* {console.log("XDXDXDXD")}
+        {console.log(url)} */}
         <WebView
           bounces={false}
           scrollEnabled={true}

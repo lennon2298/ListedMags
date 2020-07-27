@@ -23,11 +23,11 @@ export default class Magazines extends Component {
   componentDidMount() {
     // do stuff while splash screen is shown
     // After having done stuff (such as async tasks) hide the splash screen
-    this.setState({magData: this.props.navigation.state.params.magazineData});
+    this.setState({ magData: this.props.navigation.state.params.magazineData });
   }
 
   renderMagazine(data) {
-    this.props.navigation.navigate('MagazineView', {magazineData : data})
+    this.props.navigation.navigate('MagazineView', { magazineData: data })
   }
 
   render() {
@@ -39,35 +39,35 @@ export default class Magazines extends Component {
         </View>
         <Card>
           <CardItem>
-            <Image source={{ uri: this.state.magData.thumbnail }} style={{height: 200, width: 150}} />
-            <View style={{ marginHorizontal: "5%", marginVertical: "2%", alignSelf: "flex-start"}}>
-              <Text style={{ fontWeight: "700", fontSize: 22, textTransform: "capitalize"}}>
-                {console.log(this.state.magData.title)}
+            <Image source={{ uri: this.state.magData.thumbnail }} style={{ height: 200, width: 150 }} />
+            <View style={{ marginHorizontal: "5%", marginVertical: "2%", alignSelf: "flex-start" }}>
+              <Text style={{ fontWeight: "700", fontSize: 22, textTransform: "capitalize" }}>
+                {/* {console.log(this.state.magData.title)} */}
                 {this.state.magData.title}
               </Text>
             </View>
           </CardItem>
           <CardItem>
-            <View style={{flex:1}}>
-            <Button style={styles.loginButton} textStyle={styles.buttonText} 
-            onPress={() => this.renderMagazine(this.state.magData.id)}>
-              Read Now
+            <View style={{ flex: 1 }}>
+              <Button style={styles.loginButton} textStyle={styles.buttonText}
+                onPress={() => this.renderMagazine(this.state.magData.id)}>
+                Read Now
             </Button>
             </View>
           </CardItem>
         </Card>
         <Card>
-            <CardItem header bordered>
-            <Text style={{ fontWeight: "700", fontSize: 22,}}>Details</Text>
-            </CardItem>
-            <CardItem bordered >
-              <Body>
-                <Text>
-                  {this.state.magData.description}
-                </Text>
-              </Body>
-            </CardItem>
-          </Card>
+          <CardItem header bordered>
+            <Text style={{ fontWeight: "700", fontSize: 22, }}>Details</Text>
+          </CardItem>
+          <CardItem bordered >
+            <Body>
+              <Text>
+                {this.state.magData.description}
+              </Text>
+            </Body>
+          </CardItem>
+        </Card>
       </View>
     );
   }

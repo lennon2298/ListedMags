@@ -39,21 +39,21 @@ export default class Magazines extends Component {
     });
 
     //alert("xs");
-    console.log("lolol");
+    //console.log("lolol");
     await instance
       .get('blog/categories')
       .then(async response => {
         //this.state.articleDictionary = responseJson.data;
         await this.setState({ categoryDictionary: response.data });
-        console.log(response);
-        console.log("XD");
-        console.log(this.state.categoryDictionary);
+        // console.log(response);
+        // console.log("XD");
+        // console.log(this.state.categoryDictionary);
         this.setState({ categoryData: true });
       })
       .catch(async error => {
-          console.log(error);
-          await this.handleCategoryRequest();
-        });
+        // console.log(error);
+        await this.handleCategoryRequest();
+      });
     //this.checkLoginAuth();
     //this.render();
   }
@@ -64,28 +64,28 @@ export default class Magazines extends Component {
       timeout: 1500,
     });
 
-    console.log("lolol");
-    console.log("Category data prop" + this.props.navigation.state.params.categoryData)
+    // console.log("lolol");
+    // console.log("Category data prop" + this.props.navigation.state.params.categoryData)
     await instance
       .get('blog/categories/post/list/' + this.props.navigation.state.params.categoryData + '/')
       .then(async response => {
         await this.setState({ articlesDictionary: response.data });
-        console.log("Category data prop" + this.props.navigation.state.params.categoryData)
-        console.log(response);
-        console.log("XD");
-        console.log(this.state.articlesDictionary);
+        // console.log("Category data prop" + this.props.navigation.state.params.categoryData)
+        // console.log(response);
+        // console.log("XD");
+        // console.log(this.state.articlesDictionary);
         this.setState({ articleData: true });
       })
       .catch(async error => {
-          console.log(error);
-          await this.handleArticleListRequest();
-        });
+        // console.log(error);
+        await this.handleArticleListRequest();
+      });
     //this.checkLoginAuth();
     //this.render();
   }
 
   renderArticleView(data) {
-    this.props.navigation.navigate('ArticleView', {articleData : data})
+    this.props.navigation.navigate('ArticleView', { articleData: data })
   }
 
   renderArticleListCards = (data) => {
@@ -96,12 +96,12 @@ export default class Magazines extends Component {
             <Thumbnail square large source={{ uri: data.item.post_img }} />
             <View style={{ marginHorizontal: "5%", }}>
               <Text style={{ fontWeight: "700", fontSize: 22, }}>
-                {console.log(data.item.title)}
+                {/* {console.log(data.item.title)} */}
                 {data.item.title}
               </Text>
               <Text >
-                {console.log(data.item.post_cat)}
-                {console.log(this.state.categoryDictionary[this.props.navigation.state.params.categoryData - 1].cat_name)}
+                {/* {console.log(data.item.post_cat)}
+                {console.log(this.state.categoryDictionary[this.props.navigation.state.params.categoryData - 1].cat_name)} */}
                 {this.state.categoryDictionary[this.props.navigation.state.params.categoryData - 1].cat_name}
               </Text>
             </View>
@@ -119,7 +119,7 @@ export default class Magazines extends Component {
         </View>
       )
     }
-    else if(Object.keys(this.state.articlesDictionary).length === 0){
+    else if (Object.keys(this.state.articlesDictionary).length === 0) {
       return (
         <View style={styles.body}>
           <StatusBar backgroundColor={"#2d808cff"}></StatusBar>
@@ -127,14 +127,14 @@ export default class Magazines extends Component {
             <Text style={styles.headerText} >Articles</Text>
           </View>
           <Card style={{ margin: "5%", marginHorizontal: "5%" }}>
-          <CardItem >
-            <View style={{alignItems: "center", flex: 1}}>
-            <Text>
-              No Data Found
+            <CardItem >
+              <View style={{ alignItems: "center", flex: 1 }}>
+                <Text>
+                  No Data Found
             </Text>
-            </View>
-          </CardItem>
-        </Card>
+              </View>
+            </CardItem>
+          </Card>
         </View>
       );
     }
@@ -145,15 +145,16 @@ export default class Magazines extends Component {
           <Text style={styles.headerText} >Articles</Text>
         </View>
         <FlatList
-                horizontal={false}
-                showsVerticalScrollIndicator={false}
-                decelerationRate={0}
-                snapToAlignment={"center"}
-                data={this.state.articlesDictionary}
-                extraData={this.state}
-                keyExtractor={(article, id) => id.toString()}
-                renderItem={data => this.renderArticleListCards(data)}
-              />
+          horizontal={false}
+          showsVerticalScrollIndicator={false}
+          initialNumToRender={10}
+          decelerationRate={0}
+          snapToAlignment={"center"}
+          data={this.state.articlesDictionary}
+          extraData={this.state}
+          keyExtractor={(article, id) => id.toString()}
+          renderItem={data => this.renderArticleListCards(data)}
+        />
       </View>
     );
   }

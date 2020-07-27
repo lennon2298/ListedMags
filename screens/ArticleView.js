@@ -41,12 +41,12 @@ export default class ArticleView extends Component {
     await AsyncStorage.getItem('user_email').then((userEmail) => {
       if (userEmail) {
         this.setState({ userEmailId: userEmail });
-        console.log("User email: " + this.state.userEmailId);
+        // console.log("User email: " + this.state.userEmailId);
       }
     });
     var date = new Date(this.state.articleData.created_at);
     this.setState({ dateCreated: new Date(date) });
-    console.log(this.state.dateCreated)
+    // console.log(this.state.dateCreated)
     this.setState({ date: format(this.state.dateCreated, 'Do MMM') });
     await this.handleCommentRequest();
   }
@@ -56,18 +56,18 @@ export default class ArticleView extends Component {
       baseURL: 'http://165.22.213.1/',
       timeout: 1500,
     });
-    console.log("lolol");
+    // console.log("lolol");/
     await instance
       .get('blog/' + this.state.articleData.id + '/comments/', {}, { withCredentials: true })
       .then(async response => {
         await this.setState({ commentData: response.data });
-        console.log(response);
-        console.log("XD");
-        console.log(this.state.commentData);
+        // console.log(response);
+        // console.log("XD");
+        // console.log(this.state.commentData);
         this.setState({ blogData: true });
       })
       .catch(async error => {
-        console.log(error);
+        // console.log(error);
         await this.handleCommentRequest();
       });
     //this.checkLoginAuth();
@@ -76,50 +76,45 @@ export default class ArticleView extends Component {
 
   renderComments = (data) => {
     return (
-      <View style={{ flexDirection: "row", marginBottom: "2%", alignContent: "flex-start"}}>
+      <View style={{ flexDirection: "row", marginBottom: "2%", alignContent: "flex-start" }}>
         <Thumbnail small source={require('../res/avatar.jpg')} />
         <View flexDirection="column">
-        <Text style={{marginHorizontal: "5%", justifyContent: "center", color: "#208de1ff"}}>
-          {data.item.author}
-        </Text>
-        <Text style={{marginHorizontal: "5%", justifyContent: "center"}}>
-          {data.item.text}
-        </Text>
+          <Text style={{ marginHorizontal: "5%", justifyContent: "center", color: "#208de1ff" }}>
+            {data.item.author}
+          </Text>
+          <Text style={{ marginHorizontal: "5%", justifyContent: "center" }}>
+            {data.item.text}
+          </Text>
         </View>
       </View>
     )
   }
 
   async handleCommentPost() {
-    if(this.state.newComment == '') {
+    if (this.state.newComment == '') {
       return
     }
-    else{ 
+    else {
       const instance = axios.create({
         baseURL: 'http://165.22.213.1/',
         timeout: 1500,
       });
-      console.log("lolol");
+      // console.log("lolol");
       const commentData = {
         text: this.state.newComment,
         user: this.state.userEmailId,
       };
-      // const commentData = {}
-      // commentData["user"] = this.state.userEmailId
-      // commentData["text"] = this.state.newComment
-      // commentData.push({user: })
-      // commentData.push({text: this.state.newComment})
-      //console.log(JSON.stringify(commentData))
+
       await instance
         .post('blog/' + this.state.articleData.id + '/comments/post/', commentData)
         .then(async response => {
           //await this.setState({ commentData: response.data });
-          console.log(response);
-          console.log("XD comment posted");
+          // console.log(response);
+          // console.log("XD comment posted");
           //console.log(this.state.commentData);
           this.setState({ newComment: "" });
           await this.handleCommentRequest();
-          this.setState({reloadComments: !this.state.reloadComments})
+          this.setState({ reloadComments: !this.state.reloadComments })
         })
         .catch(error => console.log(error));
       //this.checkLoginAuth();
@@ -133,7 +128,7 @@ export default class ArticleView extends Component {
         <ScrollView style={styles.body} showsVerticalScrollIndicator={false}>
           <View style={styles.titleView}>
             <Text style={styles.titleText}>
-              {console.log(this.state.articleData)}
+              {/* {console.log(this.state.articleData)} */}
               {this.state.articleData.title}
             </Text>
           </View>
@@ -152,27 +147,27 @@ export default class ArticleView extends Component {
             scrollEnabled={true}
             source={{ html: this.state.articleData.content }}
             scalesPageToFit={false}
-            style={{width: "99%"}}
-            />
-          {console.log(this.state.articleData.content)}
+            style={{ width: "99%" }}
+          />
+          {/* {console.log(this.state.articleData.content)} */}
           <Text style={styles.commentHeader}>
             {'Comments: '}
           </Text>
-              <FlatList
-                showsVerticalScrollIndicator={false}
-                data={this.state.commentData}
-                extraData={this.state.reloadComments}
-                keyExtractor={(article, id) => id.toString()}
-                renderItem={data => this.renderComments(data)}
-              />
-            <View style={{flexDirection: "row", marginTop: "3%",}}>
-              <Thumbnail small source={require('../res/avatar.jpg')} />
-              <View style={{flex: 1, alignItems: "stretch"}}>
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            data={this.state.commentData}
+            extraData={this.state.reloadComments}
+            keyExtractor={(article, id) => id.toString()}
+            renderItem={data => this.renderComments(data)}
+          />
+          <View style={{ flexDirection: "row", marginTop: "3%", }}>
+            <Thumbnail small source={require('../res/avatar.jpg')} />
+            <View style={{ flex: 1, alignItems: "stretch" }}>
               <TextInput placeholder={"Type Something"} autoCapitalize={"none"} autoCorrect={false}
                 style={styles.inputText} onChangeText={(text) => this.setState({ newComment: text })}
                 value={this.state.newComment} multiline={true} numberOfLines={4} />
-              </View>
             </View>
+          </View>
           <Button style={styles.commentButton} textStyle={styles.buttonText}
             onPress={() => this.handleCommentPost()}>
             Post
@@ -228,7 +223,7 @@ const styles = StyleSheet.create({
     borderColor: "#208de1",
     backgroundColor: '#208de1',
     width: "30%",
-    alignSelf: "flex-end", 
+    alignSelf: "flex-end",
     marginRight: "2.5%"
   },
   authorText: {

@@ -11,6 +11,7 @@ import {
   FlatList,
   ScrollView,
   Dimensions,
+  Linking,
 } from 'react-native';
 
 import SplashScreen from 'react-native-splash-screen';
@@ -44,16 +45,16 @@ export default class Home extends Component {
     await AsyncStorage.getItem('user_id').then((userId) => {
       if (userId) {
         this.setState({ userTokenId: JSON.parse(userId) });
-        console.log(this.state.userTokenId);
+        // console.log(this.state.userTokenId);
         axios.defaults.headers.common['Authorization'] = "Token " + this.state.userTokenId.key;
-        console.log(axios.defaults.headers.common.Authorization);
+        // console.log(axios.defaults.headers.common.Authorization);
       }
     });
 
     await AsyncStorage.getItem('user_email').then((userEmail) => {
       if (userEmail) {
         this.setState({ userEmailId: userEmail });
-        console.log("User email: " + this.state.userEmailId);
+        // console.log("User email: " + this.state.userEmailId);
       }
     });
 
@@ -61,7 +62,7 @@ export default class Home extends Component {
     await this.handleArticleRequest();
     await this.handleAddRequest();
     await this.handlePollRequest();
-    
+
     SplashScreen.hide();
   }
 
@@ -70,28 +71,28 @@ export default class Home extends Component {
       baseURL: 'http://165.22.213.1/',
       timeout: 1500,
     });
-    console.log("lolol");
+    // console.log("lolol");
     await instance
       .get('blog/', {}, { withCredentials: true })
       .then(async response => {
         await this.setState({ articleDictionary: response.data });
-        console.log(response);
-        console.log("XD");
-        console.log(this.state.articleDictionary);
+        // console.log(response);
+        // console.log("XD");
+        // console.log(this.state.articleDictionary);
         this.setState({ blogData: true });
       })
       .catch(async error => {
         console.log(error);
         if (error.response) {
-          console.log("error data" + error.response.data);
-          console.log("error status" + error.response.status);
-          console.log("error header" + error.response.headers);
+          // console.log("error data" + error.response.data);
+          // console.log("error status" + error.response.status);
+          // console.log("error header" + error.response.headers);
         } else if (error.request) {
-          console.log("error request" + error.request);
+          // console.log("error request" + error.request);
         } else {
-          console.log('Error', error.message);
+          // console.log('Error', error.message);
         }
-        console.log(error.config);
+        // console.log(error.config);
         await this.handleArticleRequest();
       });
     //this.checkLoginAuth();
@@ -106,19 +107,19 @@ export default class Home extends Component {
     });
 
     //alert("xs");
-    console.log("lolol");
+    // console.log("lolol");
     await instance
       .get('adds/')
       .then(async response => {
         //this.state.articleDictionary = responseJson.data;
         await this.setState({ addDictionary: response.data });
-        console.log(response);
-        console.log("XD");
-        console.log(this.state.addDictionary);
+        // console.log(response);
+        // console.log("XD");
+        // console.log(this.state.addDictionary);
         this.setState({ addData: true });
       })
       .catch(async error => {
-        console.log(error);
+        // console.log(error);
         await this.handleAddRequest();
       });
     //this.checkLoginAuth();
@@ -133,29 +134,29 @@ export default class Home extends Component {
     });
 
     //alert("xs");
-    console.log("lolol");
+    // console.log("lolol");
     await instance
       .get('blog/categories')
       .then(async response => {
         //this.state.articleDictionary = responseJson.data;
         await this.setState({ categoryDictionary: response.data });
-        console.log(response);
-        console.log("XD");
-        console.log(this.state.categoryDictionary);
+        // console.log(response);
+        // console.log("XD");
+        // console.log(this.state.categoryDictionary);
         this.setState({ categoryData: true });
       })
       .catch(async error => {
-        console.log(error);
+        // console.log(error);
         if (error.response) {
-          console.log("error data" + error.response.data);
-          console.log("error status" + error.response.status);
-          console.log("error header" + error.response.headers);
+          // console.log("error data" + error.response.data);
+          // console.log("error status" + error.response.status);
+          // console.log("error header" + error.response.headers);
         } else if (error.request) {
-          console.log("error request" + error.request);
+          // console.log("error request" + error.request);
         } else {
-          console.log('Error', error.message);
+          // console.log('Error', error.message);
         }
-        console.log(error.config);
+        // console.log(error.config);
         await this.handleCategoryRequest();
       });
     //this.checkLoginAuth();
@@ -170,18 +171,18 @@ export default class Home extends Component {
     });
 
     //alert("xs");
-    console.log("lolol");
+    // console.log("lolol");
     await instance
       .get('polls/')
       .then(async response => {
         //this.state.articleDictionary = responseJson.data;
         await this.setState({ pollDictionary: response.data });
-        console.log(response);
-        console.log("XD");
-        console.log(this.state.pollDictionary);
+        // console.log(response);
+        // console.log("XD");
+        // console.log(this.state.pollDictionary);
       })
       .catch(async error => {
-        console.log(error);
+        // console.log(error);
         await this.handlePollRequest();
       });
     //this.checkLoginAuth();
@@ -194,7 +195,7 @@ export default class Home extends Component {
   }
 
   renderArticleView(data) {
-    this.props.navigation.navigate('ArticleView', {articleData : data})
+    this.props.navigation.navigate('ArticleView', { articleData: data })
   }
 
   renderArticleCards = (data) => {
@@ -204,12 +205,12 @@ export default class Home extends Component {
           <CardItem>
             <Thumbnail square large source={{ uri: data.item.post_img }} />
             <View style={{ marginHorizontal: "5%", }}>
-              <Text style={{ fontWeight: "700", fontSize: 22, textTransform: "capitalize"}}>
-                {console.log(data.item.title)}
+              <Text style={{ fontWeight: "700", fontSize: 22, textTransform: "capitalize" }}>
+                {/* {console.log(data.item.title)} */}
                 {data.item.title}
               </Text>
               <Text >
-                {console.log(data.item.post_cat)}
+                {/* {console.log(data.item.post_cat)} */}
                 {/* {console.log(this.state.categoryDictionary[data.item.post_cat].cat_name)} */}
                 {data.item.post_cat}
               </Text>
@@ -220,14 +221,24 @@ export default class Home extends Component {
     )
   }
 
+  handleAddOpen = (data) => {
+    if(data.localeCompare("no link") == 0){
+      return
+    }
+    else {
+      Linking.openURL(data);
+    }
+  }
+
   renderAddsCards = (data) => {
     return (
-      <TouchableOpacity onPress={() => { }}>
+      <TouchableOpacity onPress={() => this.handleAddOpen(data.item.link)}>
         <Card style={{ marginHorizontal: "5%", }}>
-            {console.log(data.item.thumbnail)}
-              <Image source={{ uri: data.item.thumbnail }}
-                style={{ resizeMode: "cover", 
-                height: Dimensions.get('window').height * 0.17, width: Dimensions.get('window').width * 0.5 }} />
+          <Image source={{ uri: data.item.thumbnail }}
+            style={{
+              resizeMode: "cover",
+              height: Dimensions.get('window').height * 0.17, width: Dimensions.get('window').width * 0.5
+            }} />
         </Card>
       </TouchableOpacity>
     )
@@ -235,12 +246,12 @@ export default class Home extends Component {
 
   renderPollCards = (data) => {
     return (
-      <View style={{width: Dimensions.get('window').width/1.4}} >
+      <View style={{ width: Dimensions.get('window').width / 1.4 }} >
         <TouchableOpacity onPress={() => this.renderPollView(data.item.id)} >
           <Card style={{ marginVertical: "3%", marginHorizontal: "2%" }}>
             <CardItem>
               <View style={{ flex: 1 }}>
-                <Text style={{fontWeight: "700", fontSize: 18}}>
+                <Text style={{ fontWeight: "700", fontSize: 18 }}>
                   {data.item.question_text}
                 </Text>
               </View>
@@ -255,18 +266,18 @@ export default class Home extends Component {
   }
 
   renderPollView(data) {
-    this.props.navigation.navigate('PollView', {pollData : data})
+    this.props.navigation.navigate('PollView', { pollData: data })
   }
 
   renderArticleListView(data) {
-    this.props.navigation.navigate('ArticleListView', {categoryData : data})
+    this.props.navigation.navigate('ArticleListView', { categoryData: data })
   }
 
   renderCategoryCard = (data) => {
     return (
       <TouchableOpacity onPress={() => this.renderArticleListView(data.index + 1)}>
         <CardItem>
-          {console.log(data)}
+          {/* {console.log(data)} */}
           <Thumbnail large source={{ uri: data.item.thumbnail }} />
         </CardItem>
       </TouchableOpacity>

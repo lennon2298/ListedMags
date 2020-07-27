@@ -7,20 +7,22 @@ import {
   TextInput,
   Keyboard,
   TouchableWithoutFeedback,
+  ActivityIndicator,
 } from 'react-native';
 
 import SplashScreen from 'react-native-splash-screen';
 import Button from 'apsl-react-native-button';
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
-import Toast, {DURATION} from 'react-native-easy-toast';
+import Toast, { DURATION } from 'react-native-easy-toast';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 export default class LoginForm extends Component {
-  
+
   constructor(props) {
     super(props);
     this.state = {
-      email : "",
+      email: "",
       password: "",
       validated: false,
       firstName: "",
@@ -28,6 +30,7 @@ export default class LoginForm extends Component {
       loginAuth: false,
       token: {},
       userTokenId: {},
+      isLoading: false,
     }
   }
 
@@ -44,10 +47,10 @@ export default class LoginForm extends Component {
   }
 
   validate = (text) => {
-    console.log(text);
+    // console.log(text);
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (reg.test(text) === false) {
-      console.log("Email is Not Correct");
+      // console.log("Email is Not Correct");
       this.setState({ email: text })
       return false;
     }
@@ -57,18 +60,20 @@ export default class LoginForm extends Component {
     }
   }
 
-  checkLoginAuth() {
-    if(this.state.loginAuth)
-    {
+  async checkLoginAuth() {
+    if (this.state.loginAuth) {
       //alert("Authenticated");
-      console.log("Authenticated\n" + this.state.email + "\n" + "\n" + this.state.token.key);
+      // console.log("Authenticated\n" + this.state.email + "\n" + "\n" + this.state.token.key);
+      this.setState({isLoading: false})
+      await setTimeout(() => this.setState({isLoading: false}), 1000);
       this.props.navigation.navigate('App');
     }
-    else{
+    else {
       //alert("Not Authenticated\n" + this.state.email + "\n" + this.state.password);
       //alert()
       console.log("Not Authenticated\n" + this.state.email + "\n" +
-       this.state.password + "\n");
+        this.state.password + "\n");
+      this.setState({isLoading: false})
       //this.props.navigation.navigate('App');
     }
   }
@@ -86,7 +91,7 @@ export default class LoginForm extends Component {
     //  payload.last_name = this.state.lastName;
     //}
     //alert("xs");
-    console.log("lolol");
+    // console.log("lolol");
     await instance
       .post('login/', payload)
       .then(response => {
@@ -94,35 +99,36 @@ export default class LoginForm extends Component {
         AsyncStorage.setItem('user_id', JSON.stringify(response.data));
         AsyncStorage.setItem('user_email', this.state.email);
         const user = AsyncStorage.getItem('user_id');
-        console.log(user);
+        // console.log(user);
         const userEmail = AsyncStorage.getItem('user_email');
-        console.log("userEmail" + userEmail);
-        console.log("USER EMAIL: " + userEmail);
+        // console.log("userEmail" + userEmail);
+        // console.log("USER EMAIL: " + userEmail);
         // We set the returned token as the default authorization header
         axios.defaults.headers.common['Authorization'] = "Token " + this.state.token.key;
-        console.log(response);
-        console.log(this.state.token);
-        console.log("XD");
-        this.setState({loginAuth: true});
-        console.log(axios.defaults.headers.common.Authorization);
+        // console.log(response);
+        // console.log(this.state.token);
+        // console.log("XD");
+        this.setState({ loginAuth: true });
+        this.setState({isLoading: true})
+        // console.log(axios.defaults.headers.common.Authorization);
         //this.props.navigation.navigate('Home');
       })
       .catch(error => {
-        console.log(error);
+        // console.log(error);
         if (error.response) {
-          console.log("error data" + error.response.data);
-          console.log("error status" + error.response.status);
-          console.log("error header" + error.response.headers);
+          // console.log("error data" + error.response.data);
+          // console.log("error status" + error.response.status);
+          // console.log("error header" + error.response.headers);
           this.refs.toast.show('Username or Password incorrect!');
         } else if (error.request) {
-          console.log("error request" + error.request);
+          // console.log("error request" + error.request);
           this.refs.toast.show('Network Error');
         } else {
-          console.log('Error', error.message);
+          // console.log('Error', error.message);
         }
-        console.log(error.config);
+        // console.log(error.config);
       });
-      this.checkLoginAuth();
+    this.checkLoginAuth();
   }
   async handleLogoutRequest() {
     const instance = axios.create({
@@ -131,13 +137,20 @@ export default class LoginForm extends Component {
     });
     await instance
       .post('logout/')
-      .catch(error =>  console.log(error))
+      .catch(error => console.log(error))
   }
 
   render() {
+    if(this.state.isLoading) {
+      return (
+        <View style={styles.activityIndicator}>
+          <ActivityIndicator size="large" />
+        </View>
+      )
+    }
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-        <View style={styles.body}>
+        <KeyboardAwareScrollView resetScrollToCoords={{x: 0, y: 0}} contentContainerStyle={styles.body}>
           <Image source={require('../res/logo.png')} style={styles.logoImage} />
           <View style={styles.loginBody}>
             <Text style={styles.loginText} allowFontScaling={true} maxFontSizeMultiplier={5}>Login</Text>
@@ -151,13 +164,13 @@ export default class LoginForm extends Component {
             <Text>Password</Text>
           </View>
           <TextInput placeholder={"Password"} style={styles.loginInput} autoCapitalize={"none"} autoCorrect={false}
-            autoCompleteType={"password"} secureTextEntry={true} 
-            onChangeText={(text) => this.setState({ password: text })} value={this.state.password}/>
+            autoCompleteType={"password"} secureTextEntry={true}
+            onChangeText={(text) => this.setState({ password: text })} value={this.state.password} />
           <Button style={styles.loginButton} textStyle={styles.buttonText} onPress={this.handleRequest.bind(this)}>
             Log in
           </Button>
-          <Toast ref="toast"/>
-        </View>
+          <Toast ref="toast" />
+        </KeyboardAwareScrollView>
       </TouchableWithoutFeedback>
     );
   }
@@ -219,5 +232,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#208de1',
     marginLeft: "10%",
     justifyContent: "center"
+  },
+  activityIndicator: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#00000040"
   },
 });

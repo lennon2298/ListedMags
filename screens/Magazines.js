@@ -41,13 +41,13 @@ export default class Magazines extends Component {
       .get('files/magazines/')
       .then(async response => {
         await this.setState({ magazineDictionary: response.data });
-        console.log(response);
-        console.log("XD");
-        console.log(this.state.magazineDictionary);
+        // console.log(response);
+        // console.log("XD");
+        // console.log(this.state.magazineDictionary);
         this.setState({ magData: true });
       })
       .catch(async error => {
-        console.log(error);
+        // console.log(error);
         await this.handleMagazineRequest();
       });
     //this.checkLoginAuth();
@@ -55,25 +55,27 @@ export default class Magazines extends Component {
   }
 
   renderMagazinePage(data) {
-    this.props.navigation.navigate('MagazinePage', {magazineData : data})
+    this.props.navigation.navigate('MagazinePage', { magazineData: data })
   }
 
   renderMagazineCards = (data) => {
     return (
-      <TouchableOpacity onPress={() => this.renderMagazinePage(data.item)} style={{marginHorizontal: "5%", marginVertical: "2%",
-      width: Dimensions.get('window').width/2.5 }} >
-          <Card style={{ margin: "5%",flex: 1}}>
-            <CardItem cardBody>
-                {console.log(data.item.thumbnail)}
-                  <Image source={{uri: data.item.thumbnail}} 
-                  style={{resizeMode:"cover", height: 250, flex: 1}} />
-            </CardItem>
-            <CardItem>
-              <Text style={{textTransform: "capitalize"}}>
-                {data.item.title}
-              </Text>
-            </CardItem>
-          </Card>
+      <TouchableOpacity onPress={() => this.renderMagazinePage(data.item)} style={{
+        marginHorizontal: "5%", marginVertical: "2%",
+        width: Dimensions.get('window').width / 2.5
+      }} >
+        <Card style={{ margin: "5%", flex: 1 }}>
+          <CardItem cardBody>
+            {/* {console.log(data.item.thumbnail)} */}
+            <Image source={{ uri: data.item.thumbnail }}
+              style={{ resizeMode: "cover", height: 250, flex: 1 }} />
+          </CardItem>
+          <CardItem>
+            <Text style={{ textTransform: "capitalize" }}>
+              {data.item.title}
+            </Text>
+          </CardItem>
+        </Card>
       </TouchableOpacity>
     )
   }
@@ -93,16 +95,16 @@ export default class Magazines extends Component {
           <Text style={styles.headerText} >Magazines</Text>
         </View>
         <FlatList
-                horizontal={false}
-                showsVerticalScrollIndicator={false}
-                numColumns= {2}
-                decelerationRate={0}
-                snapToAlignment={"center"}
-                data={this.state.magazineDictionary}
-                extraData={this.state}
-                keyExtractor={(article, id) => id.toString()}
-                renderItem={data => this.renderMagazineCards(data)}
-              />
+          horizontal={false}
+          showsVerticalScrollIndicator={false}
+          numColumns={2}
+          decelerationRate={0}
+          snapToAlignment={"center"}
+          data={this.state.magazineDictionary}
+          extraData={this.state}
+          keyExtractor={(article, id) => id.toString()}
+          renderItem={data => this.renderMagazineCards(data)}
+        />
       </View>
     );
   }

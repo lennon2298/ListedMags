@@ -39,15 +39,15 @@ export default class PollView extends Component {
     });
 
     //alert("xs");
-    console.log("lolol");
+    // console.log("lolol");
     await instance
       .get('/' + this.props.navigation.state.params.pollData + '/')
       .then(async response => {
         //this.state.articleDictionary = responseJson.data;
         await this.setState({ pollData: response.data });
-        console.log(response);
-        console.log("XD");
-        console.log(this.state.pollData);
+        // console.log(response);
+        // console.log("XD");
+        // console.log(this.state.pollData);
         this.setState({ pollRecieved: true });
       })
       .catch(error => console.log(error));
@@ -63,19 +63,19 @@ export default class PollView extends Component {
     });
 
     //alert("xs");
-    console.log("lolol");
+    // console.log("lolol");
     await instance
       .get(+this.props.navigation.state.params.pollData + '/choices/')
       .then(async response => {
         //this.state.articleDictionary = responseJson.data;
         await this.setState({ choicesDictionary: response.data });
-        console.log(response);
-        console.log("XD");
-        console.log(this.state.choicesDictionary);
+        // console.log(response);
+        // console.log("XD");
+        // console.log(this.state.choicesDictionary);
         this.setState({ choicesRecieved: true });
       })
       .catch(async error => {
-        console.log(error);
+        // console.log(error);
         await this.handleChoiceRequest();
       });
     //this.checkLoginAuth();
@@ -90,19 +90,19 @@ export default class PollView extends Component {
     });
 
     //alert("xs");
-    console.log("lolol");
-    console.log(choice)
+    // console.log("lolol");
+    // console.log(choice)
     const url = '/' + this.props.navigation.state.params.pollData + '/choices/' + choice + '/';
-    console.log('http://165.22.213.1/polls' + url);
+    // console.log('http://165.22.213.1/polls' + url);
     await instance
       .post(url, { withCredentials: true })
       .then(async response => {
         //this.state.articleDictionary = responseJson.data;
         await this.setState({ responseDictionary: response.data });
-        console.log(response);
-        console.log("XD");
-        console.log(this.state.responseDictionary);
-        await this.setState({choiceSelected: true})
+        // console.log(response);
+        // console.log("XD");
+        // console.log(this.state.responseDictionary);
+        await this.setState({ choiceSelected: true })
       })
       .catch(error => console.log(error));
     //this.checkLoginAuth();
@@ -110,25 +110,25 @@ export default class PollView extends Component {
   }
 
   renderChoiceButtons(data) {
-    if(this.state.choiceSelected){
-      return(
+    if (this.state.choiceSelected) {
+      return (
         <Button style={styles.choiceButton} textStyle={styles.buttonText}
-        onPress={() => {}}>
-        {console.log(data.item)}
-        {console.log(this.state.responseDictionary[data.index].votes)}
-        {data.item.choice + '     \tvotes: ' + this.state.responseDictionary[data.index].votes}
+          onPress={() => { }}>
+          {/* {console.log(data.item)}
+          {console.log(this.state.responseDictionary[data.index].votes)} */}
+          {data.item.choice + '     \tvotes: ' + this.state.responseDictionary[data.index].votes}
         </Button>
       )
     }
-    return(
+    return (
       <Button style={styles.choiceButton} textStyle={styles.buttonText}
-      onPress={() => this.handleChoiceSubmit(data.item.id)}>
-      {console.log(data)}
-      {data.item.choice}
+        onPress={() => this.handleChoiceSubmit(data.item.id)}>
+        {/* {console.log(data)} */}
+        {data.item.choice}
       </Button>
     )
   }
-  
+
 
   render() {
     if (!this.state.pollRecieved && !this.state.choicesRecieved) {
@@ -189,8 +189,8 @@ const styles = StyleSheet.create({
   pollCard: {
     marginVertical: "7%",
     alignSelf: "center",
-    width: Dimensions.get('window').width/1.15,
-    height: Dimensions.get('window').height/2.2,
+    width: Dimensions.get('window').width / 1.15,
+    height: Dimensions.get('window').height / 2.2,
     shadowColor: 'rgba(14, 12, 25, 0.31)',
     shadowRadius: 10,
     borderRadius: 2,
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
     margin: "4%",
   },
   pollChoices: {
-    flex: 1, 
+    flex: 1,
     justifyContent: "flex-end"
   },
   buttonChoices: {

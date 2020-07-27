@@ -10,26 +10,9 @@ import {
 import SplashScreen from 'react-native-splash-screen';
 import Button from 'apsl-react-native-button';
 import SocialButton from 'rtg-rn-social-buttons';
-import {google, facebook} from 'react-native-simple-auth';
+import { google, facebook } from 'react-native-simple-auth';
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
-// import OAuthManager from 'react-native-oauth';
-
-// const config =  {
-//   google: {
-//     client_id: '457262287809-hs217glngmohqdd7v03q2c114lb3p00n.apps.googleusercontent.com',
-//     client_secret: 'WkH_C1ZXrUVAIG8Dd2V86TW-'    
-//   },
-//   facebook: {
-//     client_id: 'YOUR_CLIENT_ID',
-//     client_secret: 'YOUR_CLIENT_SECRET'
-//   }
-// }
-// // Create the manager
-// const manager = new OAuthManager('ListedMag')
-
-// // configure the manager
-// manager.configure(config);
 
 const googleConfig = {
   appId: '457262287809-t8tdnpr7iqrhfhnmpo6glare4ehuf6tj.apps.googleusercontent.com',
@@ -64,12 +47,12 @@ export default class LoginHome extends Component {
   }
 
   handleGoogleLogin = () => {
-    console.log("inside google login")
+    // console.log("inside google login")
     google(googleConfig)
       .then((info) => {
-        console.log(info);
+        // console.log(info);
         //this.setState({userId: info.credentials.access_token});
-        this.setState({userId: info.credentials.access_token});
+        this.setState({ userId: info.credentials.access_token });
         this.handleRegisterRequest();
       })
       .catch((error) => {
@@ -78,14 +61,14 @@ export default class LoginHome extends Component {
   }
 
   handleFacebookLogin = () => {
-    console.log("inside facebook login")
+    // console.log("inside facebook login")
     facebook(facebookConfig)
       .then((info) => {
-        console.log(info);
+        // console.log(info);
         //this.setState({userId: info.credentials.access_token});
-        this.setState({userId: info.credentials.access_token});
-        this.setState({email: info.user.email})
-        console.log(info.user.email)
+        this.setState({ userId: info.credentials.access_token });
+        this.setState({ email: info.user.email })
+        // console.log(info.user.email)
         this.handleRegisterRequest();
       })
       .catch((error) => {
@@ -94,14 +77,13 @@ export default class LoginHome extends Component {
   }
 
   checkRegisterAuth() {
-    if(this.state.RegisterAuth)
-    {
+    if (this.state.RegisterAuth) {
       //alert("Authenticated");
-      console.log("Authenticated\n" + this.state.email + "\n" +
-       this.state.password + "\n" + this.state.token.key);
+      // console.log("Authenticated\n" + this.state.email + "\n" +
+        // this.state.password + "\n" + this.state.token.key);
       this.props.navigation.navigate('App');
     }
-    else{
+    else {
       //alert("Not Authenticated\n" + this.state.email + "\n" + this.state.password);
       //alert()
       console.log("Not Authenticated\n" + "\n");
@@ -115,13 +97,13 @@ export default class LoginHome extends Component {
       timeout: 5000,
     });
     //const payload = { email: this.state.email, password1: this.state.password, password2: this.state.password2 }
-    const payload = {access_token: this.state.userId}
+    const payload = { access_token: this.state.userId }
     //if (this.props.create) {
     //  payload.first_name = this.state.firstName;
     //  payload.last_name = this.state.lastName;
     //}
     //alert("xs");
-    console.log("lolol");
+    // console.log("lolol");
     await instance
       .post('api/users/facebook/login/', payload)
       .then(async response => {
@@ -129,23 +111,23 @@ export default class LoginHome extends Component {
         await AsyncStorage.setItem('user_id', JSON.stringify(response.data));
         await AsyncStorage.setItem('user_email', this.state.email);
         const user = AsyncStorage.getItem('user_id');
-        console.log(user);
+        // console.log(user);
         const userEmail = AsyncStorage.getItem('user_email');
-        console.log("userEmail" + userEmail);
-        console.log("USER EMAIL: " + userEmail);
+        // console.log("userEmail" + userEmail);
+        // console.log("USER EMAIL: " + userEmail);
         // We set the returned token as the default authorization header
         axios.defaults.headers.common['Authorization'] = "Token " + this.state.token.key;
-        console.log(response);
-        console.log(this.state.token);
-        console.log("XD");
-        this.setState({RegisterAuth: true})
-        console.log(axios.defaults.headers.common.Authorization);
+        // console.log(response);
+        // console.log(this.state.token);
+        // console.log("XD");
+        this.setState({ RegisterAuth: true })
+        // console.log(axios.defaults.headers.common.Authorization);
         //this.props.navigation.navigate('Home');
       })
       .catch(error => console.log(error));
 
-      //this.checkLoginAuth();
-      this.checkRegisterAuth();
+    //this.checkLoginAuth();
+    this.checkRegisterAuth();
   }
 
   render() {
